@@ -1,0 +1,53 @@
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+////////////////////////////////////////////////////////////////////
+// 검색 데이터 베이스 만들기
+// 1. 오름차순 정렬
+// 2. 알파벳 순으로 24개의 벡터 생성
+//------------------------------------------------------------------
+// 검색 알고리즘 만들기
+// 1. 비교대상의 첫문자를 확인 후 매칭된 알파벳 집단을 대상으로 검색시작
+// 2. 매칭되는 알파벳의 벡터에 2진탐색 알고리즘 적용
+////////////////////////////////////////////////////////////////////
+
+int BinarySearch(vector<string> dataArr, int size, string findData) {
+    int low = 0, high = size - 1, mid; // high가 low보다 작아진다면 찾으려는 데이터가 데이터 집합에 없다. 
+
+    while (low <= high) // 중앙값은 low와 high를 더한 값을 2로 나누면 된다. 
+    { 
+        mid = (low + high) / 2; // 만약 찾으려는 값이 중앙값보다 작다면 high를 mid - 1로 둔다. 
+        if (dataArr[mid] > findData) high = mid - 1; // 만약 찾으려는 값이 중앙값보다 크다면 low를 mid + 1로 둔다. 
+        else if (dataArr[mid] < findData) low = mid + 1; // 중앙값과 찾으려는 값이 일치하면 mid를 반환한다. 
+        else return mid;
+    } 
+
+    return -1;  // 데이터를 찾지 못하면 -1를 반환한다.
+}
+
+
+string solution(vector<string> participant, vector<string> completion) {
+    string answer = "";
+    
+    sort(participant.begin(), participant.end());
+
+    vector<string>::iterator iter;
+
+    int nNum = 0;
+    for (int i = 0; i < completion.size(); i++)
+    {
+        nNum = BinarySearch(participant, participant.size(), completion[i]);
+        if (-1 < nNum)
+        {
+            iter = participant.begin() + nNum;
+            participant.erase(iter);
+        }
+    }
+
+    answer = participant.front();
+
+    return answer;
+}
